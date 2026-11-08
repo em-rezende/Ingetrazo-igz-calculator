@@ -1,0 +1,12 @@
+{
+  "title": "Ark-Z Rechner",
+  "standard": "Standard ☰",
+  "scientific": "Wissenschaftlich ☰",
+  "history": "Verlauf 📋",
+  "inject": "Einfügen ↑",
+  "injected": "Eingefügt! ✔",
+  "copied": "Kopiert! ✔",
+  "tooltip_history": "Alle Verlaufszeilen kopieren",
+  "tooltip_inject": "Wert in IngeTrazo einfügen und in die Zwischenablage kopieren",
+  "error": "Fehler"
+}

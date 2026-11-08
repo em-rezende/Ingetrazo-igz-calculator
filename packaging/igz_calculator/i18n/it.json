@@ -1,0 +1,12 @@
+{
+  "title": "Calcolatrice Ark-Z",
+  "standard": "Standard ☰",
+  "scientific": "Scientifica ☰",
+  "history": "Cronologia 📋",
+  "inject": "Inietta ↑",
+  "injected": "Iniettato! ✔",
+  "copied": "Copiato! ✔",
+  "tooltip_history": "Copia tutte le righe della cronologia",
+  "tooltip_inject": "Inietta il valore in IngeTrazo e lo copia negli appunti",
+  "error": "Errore"
+}

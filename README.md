@@ -5,13 +5,13 @@ that turn the calc into a real workspace tool: **standard / scientific
 calculator**, **scrollable extended history** (4–50 entries), **physical
 keyboard input**, **one‑click injection into the VCB** (Value Control Box),
 **live synchronization** between dialog and panel, and full
-**internationalization** (pt‑BR / en / es, with room for more).
+**internationalization** (pt‑BR / en / es / it / fr / de / zh, with room for more).
 
 Repository: <https://github.com/em-rezende/Ingetrazo-igz-calculator>
 
 - **Author:** Ezequiel M. Rezende
 - **Date:** 2026‑11‑07
-- **Version:** 1.1.0
+- **Version:** 1.2.0
 - **License:** [GPL-3.0-or-later](https://www.gnu.org/licenses/gpl-3.0.html)
   (same as IngeTrazo — see [LICENSE](https://github.com/ingelibre/ingetrazo/blob/main/LICENSE))
 
@@ -35,7 +35,11 @@ Repository: <https://github.com/em-rezende/Ingetrazo-igz-calculator>
     ├── i18n/
     │   ├── en.json
     │   ├── pt-BR.json
-    │   └── es.json
+    │   ├── es.json
+    │   ├── it.json
+    │   ├── fr.json
+    │   ├── de.json
+    │   └── zh.json
     └── icons/
         ├── calculator.svg         / calculator_light.svg
         └── calculator_panel.svg   / calculator_panel_light.svg
@@ -174,14 +178,17 @@ All visible strings go through `_t(...)`, which resolves in this order:
 
 1. **`core.i18n.tr()`** of the host — if the host has a translation
    registered, it wins.
-2. **`i18n/<lang>.json`** of the plugin — a per‑extension translation file.
-3. **`_TEXTS`** hardcoded dictionary in `igz_calculator.py` — a built‑in
-   fallback for `en` and `es`.
+2. **`i18n/<lang>.json`** of the plugin — per‑extension translation file
+   keyed by the pt‑BR source string.
+3. **`_TEXTS`** hardcoded dictionary in `igz_calculator.py` — built‑in
+   translations for `en`, `es`, `it`, `fr`, `de` and `zh`.
 4. **Identity** — returns the source string unchanged (pt‑BR default).
 
-Ships with **pt‑BR**, **en** and **es**. Adding a new language is a matter
-of dropping `i18n/it.json` (or any other) with the same keys — no code
-change needed.
+Ships with **pt‑BR**, **en**, **es**, **it**, **fr**, **de** and **zh**
+(Simplified Chinese). The language comes from the host (`_lang_key()`),
+with a base‑language fallback (e.g. `zh-CN` / `zh-Hans` → `zh`). The
+effective built‑in translations live in `_TEXTS`; the `i18n/<lang>.json`
+files mirror the same strings for reference and tooling.
 
 ---
 
@@ -290,7 +297,7 @@ None of these is required — the extension works as it is.
    with a shortcut, to reopen the toolbar if it is closed.
 5. **Sci‑mode label** — show a small `RAD` / `DEG` badge in the current
    display line, in addition to the toggle button.
-6. **More languages** — additional `i18n/*.json` files.
+6. **More languages** — additional `_TEXTS` entries and `i18n/*.json` files.
 
 ---
 

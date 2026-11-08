@@ -6,14 +6,14 @@ calculadora em uma ferramenta de trabalho de verdade: **calculadora
 padrão / científica**, **histórico extenso rolável** (4–50 entradas),
 **entrada por teclado físico**, **injeção em um clique no VCB**
 (*Value Control Box*), **sincronização em tempo real** entre o diálogo e
-o painel, e **internacionalização completa** (pt‑BR / en / es, com espaço
-para mais idiomas).
+o painel, e **internacionalização completa** (pt‑BR / en / es / it / fr / de / zh,
+com espaço para mais idiomas).
 
 Repositório: <https://github.com/em-rezende/Ingetrazo-igz-calculator>
 
 - **Autor:** Ezequiel M. Rezende
 - **Data:** 2026‑11‑07
-- **Versão:** 1.1.0
+- **Versão:** 1.2.0
 - **Licença:** [GPL-3.0-or-later](https://www.gnu.org/licenses/gpl-3.0.html)
   (mesma do IngeTrazo — ver [LICENSE](https://github.com/ingelibre/ingetrazo/blob/main/LICENSE))
 
@@ -37,7 +37,11 @@ Repositório: <https://github.com/em-rezende/Ingetrazo-igz-calculator>
     ├── i18n/
     │   ├── en.json
     │   ├── pt-BR.json
-    │   └── es.json
+    │   ├── es.json
+    │   ├── it.json
+    │   ├── fr.json
+    │   ├── de.json
+    │   └── zh.json
     └── icons/
         ├── calculator.svg         / calculator_light.svg
         └── calculator_panel.svg   / calculator_panel_light.svg
@@ -180,14 +184,17 @@ Todas as strings visíveis passam por `_t(...)`, que resolve nesta ordem:
 
 1. **`core.i18n.tr()`** do host — se o host tiver uma tradução
    registrada, ela vence.
-2. **`i18n/<lang>.json`** do plugin — um arquivo de tradução por
-   extensão.
-3. **`_TEXTS`** hardcoded em `igz_calculator.py` — fallback embutido
-   para `en` e `es`.
+2. **`i18n/<lang>.json`** do plugin — arquivo de tradução por extensão,
+   indexado pela string-fonte em pt-BR.
+3. **`_TEXTS`** hardcoded em `igz_calculator.py` — traduções embutidas
+   para `en`, `es`, `it`, `fr`, `de` e `zh`.
 4. **Identidade** — devolve a string-fonte sem alteração (padrão pt-BR).
 
-Vem com **pt-BR**, **en** e **es**. Adicionar um novo idioma é só colocar
-`i18n/it.json` (ou outro) com as mesmas chaves — sem mudança de código.
+Vem com **pt-BR**, **en**, **es**, **it**, **fr**, **de** e **zh**
+(chinês simplificado). O idioma vem do host (`_lang_key()`), com fallback
+por idioma-base (ex.: `zh-CN` / `zh-Hans` → `zh`). As traduções embutidas
+efetivas ficam em `_TEXTS`; os arquivos `i18n/<lang>.json` espelham as
+mesmas strings para referência.
 
 ---
 
@@ -298,7 +305,7 @@ Nenhuma destas é necessária — a extensão funciona como está.
    **Extensions** com atalho, para reabrir a barra se ela for fechada.
 5. **Etiqueta de modo científico** — mostrar um pequeno selo `RAD` / `DEG`
    na linha atual do display, além do botão alternador.
-6. **Mais idiomas** — arquivos `i18n/*.json` adicionais.
+6. **Mais idiomas** — entradas adicionais em `_TEXTS` e arquivos `i18n/*.json`.
 
 ---
 

@@ -18,7 +18,7 @@
 # =========================================================================
 # Extension: igz_calculator — Calculator (Standard / Scientific)
 # Author: Ezequiel M. Rezende
-# Version: 1.1.0
+# Version: 1.2.0
 # Date: 2026-11-07
 # License: GPL-3.0-or-later (same as IngeTrazo)
 # Repository: https://github.com/em-rezende/Ingetrazo-igz-calculator
@@ -40,7 +40,7 @@
 #     signal on a module-level _SyncBus);
 #   • persists history, mode (Standard/Scientific), angle (DEG/RAD)
 #     and history_limit in state.json (application data folder);
-#   • is fully internationalized (pt-BR / en / es) via core.i18n
+#   • is fully internationalized (pt-BR / en / es / it / fr / de / zh) via core.i18n
 #     when available, and via local i18n/<lang>.json files otherwise.
 #
 # The extension is written as a standalone single-file plugin: it
@@ -114,7 +114,7 @@ def _log(s: str) -> None:
 # Ordem de resolução de uma string `text` (chave = string-fonte em pt-BR):
 #   1. core.i18n do IngeTrazo (tr()) — se disponível e traduzido.
 #   2. i18n/<lang>.json do plugin — se existir.
-#   3. _TEXTS local (fallback mínimo, cobre en/es/pt-BR).
+#   3. _TEXTS local (fallback embutido; cobre pt-BR/en/es/it/fr/de/zh).
 #   4. O próprio `text` (identidade).
 
 try:
@@ -198,6 +198,90 @@ _TEXTS = {
         "Mostrar/ocultar a calculadora no painel lateral.":
             "Mostrar/ocultar la calculadora en el panel lateral.",
         "Dock Calculadora": "Dock Calculadora",
+    },
+    "it": {
+        "Calculadora": "Calcolatrice",
+        "Padrão ☰": "Standard ☰",
+        "Científica ☰": "Scientifica ☰",
+        "Histórico 📋": "Cronologia 📋",
+        "Histórico extenso": "Cronologia estesa",
+        "Injetar ↑": "Inietta ↑",
+        "Copiado! ✔": "Copiato! ✔",
+        "Injetado! ✔": "Iniettato! ✔",
+        "Erro": "Errore",
+        "Painel Calculadora": "Pannello Calcolatrice",
+        "Abre a calculadora em uma janela flutuante.":
+            "Apre la calcolatrice in una finestra mobile.",
+        "Ir para a aba Calculadora no painel lateral.":
+            "Vai alla scheda Calcolatrice nel pannello laterale.",
+        "Mostrar/ocultar a calculadora no painel lateral.":
+            "Mostra/nascondi la calcolatrice nel pannello laterale.",
+        "Dock Calculadora": "Dock Calcolatrice",
+        "DEG": "DEG",
+        "RAD": "RAD",
+    },
+    "fr": {
+        "Calculadora": "Calculatrice",
+        "Padrão ☰": "Standard ☰",
+        "Científica ☰": "Scientifique ☰",
+        "Histórico 📋": "Historique 📋",
+        "Histórico extenso": "Historique étendu",
+        "Injetar ↑": "Injecter ↑",
+        "Copiado! ✔": "Copié ! ✔",
+        "Injetado! ✔": "Injecté ! ✔",
+        "Erro": "Erreur",
+        "Painel Calculadora": "Panneau Calculatrice",
+        "Abre a calculadora em uma janela flutuante.":
+            "Ouvre la calculatrice dans une fenêtre flottante.",
+        "Ir para a aba Calculadora no painel lateral.":
+            "Aller à l'onglet Calculatrice dans le panneau latéral.",
+        "Mostrar/ocultar a calculadora no painel lateral.":
+            "Afficher/masquer la calculatrice dans le panneau latéral.",
+        "Dock Calculadora": "Dock Calculatrice",
+        "DEG": "DEG",
+        "RAD": "RAD",
+    },
+    "de": {
+        "Calculadora": "Rechner",
+        "Padrão ☰": "Standard ☰",
+        "Científica ☰": "Wissenschaftlich ☰",
+        "Histórico 📋": "Verlauf 📋",
+        "Histórico extenso": "Erweiterter Verlauf",
+        "Injetar ↑": "Einfügen ↑",
+        "Copiado! ✔": "Kopiert! ✔",
+        "Injetado! ✔": "Eingefügt! ✔",
+        "Erro": "Fehler",
+        "Painel Calculadora": "Rechner-Panel",
+        "Abre a calculadora em uma janela flutuante.":
+            "Öffnet den Rechner in einem schwebenden Fenster.",
+        "Ir para a aba Calculadora no painel lateral.":
+            "Zum Rechner-Tab im Seitenbereich wechseln.",
+        "Mostrar/ocultar a calculadora no painel lateral.":
+            "Rechner im Seitenbereich ein-/ausblenden.",
+        "Dock Calculadora": "Rechner-Dock",
+        "DEG": "DEG",
+        "RAD": "RAD",
+    },
+    "zh": {
+        "Calculadora": "计算器",
+        "Padrão ☰": "标准 ☰",
+        "Científica ☰": "科学 ☰",
+        "Histórico 📋": "历史记录 📋",
+        "Histórico extenso": "扩展历史",
+        "Injetar ↑": "注入 ↑",
+        "Copiado! ✔": "已复制！✔",
+        "Injetado! ✔": "已注入！✔",
+        "Erro": "错误",
+        "Painel Calculadora": "计算器面板",
+        "Abre a calculadora em uma janela flutuante.":
+            "在浮动窗口中打开计算器。",
+        "Ir para a aba Calculadora no painel lateral.":
+            "转到侧边面板中的计算器选项卡。",
+        "Mostrar/ocultar a calculadora no painel lateral.":
+            "显示/隐藏侧边面板中的计算器。",
+        "Dock Calculadora": "计算器停靠面板",
+        "DEG": "DEG",
+        "RAD": "RAD",
     },
 }
 

@@ -1,0 +1,12 @@
+{
+  "title": "Ark-Z 计算器",
+  "standard": "标准 ☰",
+  "scientific": "科学 ☰",
+  "history": "历史记录 📋",
+  "inject": "注入 ↑",
+  "injected": "已注入！✔",
+  "copied": "已复制！✔",
+  "tooltip_history": "复制所有历史记录行",
+  "tooltip_inject": "将数值注入 IngeTrazo 并复制到剪贴板",
+  "error": "错误"
+}
