@@ -1,0 +1,41 @@
+# Sistemas operacionais
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Visual Studio / IDEs
+.vs/
+.vscode/*
+!.vscode/settings.json
+bin/
+obj/
+*.user
+*.suo
+*.sln.DotSettings.user
+
+# Arquivos temporarios do AutoCAD
+*.sv$
+*.dwl
+*.dwl2
+*.ac$
+
+# Pasta de trabalho/desenvolvimento local (nao versionada)
+# (a pasta no disco esta grafada "Desenvovimento")
+Desenvovimento/
+Desenvolvimento/
+
+# Cache do Python
+__pycache__/
+*.pyc
+
+# Staging local da submissao ao catalogo (o TOML final vai para o repo
+# ingelibre/ingetrazo-extensions, nao para este repositorio)
+ingetrazo-extensions-submission/
+
+# Saida de compilacao (instaladores sao distribuidos via GitHub Releases)
+Output/*.exe
+
+# Artefato da extensao para o catalogo do IngeTrazo (enviado via GitHub Releases)
+dist/
+

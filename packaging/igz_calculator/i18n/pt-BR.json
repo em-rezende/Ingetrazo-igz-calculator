@@ -1,0 +1,12 @@
+{
+  "title": "Calculadora Ark-Z",
+  "standard": "Padrão ☰",
+  "scientific": "Científica ☰",
+  "history": "Histórico 📋",
+  "inject": "Injetar ↑",
+  "injected": "Injetado! ✔",
+  "copied": "Copiado! ✔",
+  "tooltip_history": "Copia todas as linhas do histórico",
+  "tooltip_inject": "Injeta o valor no IngeTrazo e copia para a área de transferência",
+  "error": "Erro"
+}

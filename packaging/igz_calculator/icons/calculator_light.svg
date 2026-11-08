@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Creator: CorelDRAW 2026 -->
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="5.4186mm" height="5.4186mm" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+viewBox="0 0 541.86 541.86"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:xodm="http://www.corel.com/coreldraw/odm/2003"
+ xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:cc="http://web.resource.org/cc/"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:svg="http://www.w3.org/2000/svg"
+ xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+ xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+ <defs>
+  <style type="text/css">
+   <![CDATA[
+    .str0 {stroke:#373435;stroke-width:20;stroke-miterlimit:22.9256}
+    .fil3 {fill:none}
+    .fil0 {fill:#4B4B4D}
+    .fil1 {fill:#FBB923}
+    .fil2 {fill:#FEFEFE;fill-rule:nonzero}
+   ]]>
+  </style>
+ </defs>
+ <g id="Camada_x0020_1">
+  <metadata id="CorelCorpID_0Corel-Layer"/>
+  <sodipodi:namedview id="base" showgrid="true" gridspacingy="1pt" gridspacingx="1pt" gridoriginy="0pt" gridoriginx="0pt"/>
+  <g>
+   <path class="fil0" d="M270.93 499.53l-177.8 0c-27.94,0 -50.8,-22.86 -50.8,-50.8l0 -355.6c0,-27.94 22.86,-50.8 50.8,-50.8l177.8 0 0 457.2z"/>
+   <path class="fil1" d="M270.93 499.53l177.8 0c27.94,0 50.8,-22.86 50.8,-50.8l0 -355.6c0,-27.94 -22.86,-50.8 -50.8,-50.8l-177.8 0 0 457.2z"/>
+   <path class="fil2" d="M314.96 287.86l135.45 0 0 33.87 -135.45 0 0 -33.87zm0 -67.73l135.45 0 0 33.87 -135.45 0 0 -33.87z" color="#bebebe"/>
+   <polygon class="fil2" points="108.38,176.11 142.24,176.11 142.24,209.98 176.11,209.98 176.11,176.11 209.98,176.11 209.98,142.24 176.11,142.24 176.11,108.38 142.24,108.38 142.24,142.24 108.38,142.24 " color="#bebebe"/>
+   <polygon class="fil2" points="108.38,409.77 209.98,409.77 209.98,375.91 108.38,375.91 " color="#bebebe"/>
+   <path class="fil3 str0" d="M93.13 42.33l355.6 0c27.94,0 50.8,22.86 50.8,50.8l0 355.6c0,27.94 -22.86,50.8 -50.8,50.8l-355.6 0c-27.94,0 -50.8,-22.86 -50.8,-50.8l0 -355.6c0,-27.94 22.86,-50.8 50.8,-50.8z"/>
+  </g>
+ </g>
+</svg>

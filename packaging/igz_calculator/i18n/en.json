@@ -1,0 +1,12 @@
+{
+  "title": "Ark-Z Calculator",
+  "standard": "Standard ☰",
+  "scientific": "Scientific ☰",
+  "history": "History 📋",
+  "inject": "Inject ↑",
+  "injected": "Injected! ✔",
+  "copied": "Copied! ✔",
+  "tooltip_history": "Copy all history lines",
+  "tooltip_inject": "Inject value into IngeTrazo and copy to clipboard",
+  "error": "Error"
+}
