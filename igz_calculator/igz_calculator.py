@@ -18,8 +18,8 @@
 # =========================================================================
 # Extension: igz_calculator — Calculator (Standard / Scientific)
 # Author: Ezequiel M. Rezende
-# Version: 1.2.0
-# Date: 2026-11-07
+# Version: 1.2.1
+# Date: 2026-11-14
 # License: GPL-3.0-or-later (same as IngeTrazo)
 # Repository: https://github.com/em-rezende/Ingetrazo-igz-calculator
 #
@@ -1795,7 +1795,7 @@ def _titulo_do_grupo(title) -> bool:
     return any(k in t for k in _PANEL_GROUP_TITLES)
 
 
-def _attach_calculator_panel(mw):
+def _attach_calculator_panel(mw, app=None):
     if mw is None:
         return None
 
@@ -1806,32 +1806,41 @@ def _attach_calculator_panel(mw):
              + traceback.format_exc())
         return None
 
-    try:
-        tabs = list(mw.findChildren(QTabWidget))
-    except Exception:
-        tabs = []
-    melhor, melhor_score = None, 0
-    for tw in tabs:
+    add_panel = getattr(app, "add_panel", None) if app is not None else None
+
+    # Se o host tem a API (como no meu_plugin), usa ela!
+    if callable(add_panel):
         try:
-            labels = [tw.tabText(i) for i in range(tw.count())]
-        except Exception:
-            labels = []
-        score = sum(1 for lbl in labels if _titulo_do_grupo(lbl))
-        if score > melhor_score:
-            melhor, melhor_score = tw, score
-    if melhor is not None:
-        try:
-            melhor.addTab(panel, _t("Calculadora"))
-            melhor.setCurrentWidget(panel)
-            _log("Painel Calculadora adicionado como aba em QTabWidget.")
+            dock = add_panel(_t("Calculadora"), panel, name="igz_tb_calculator", stretch=0)
+            panel._dock = dock
+            _log("Painel Calculadora registrado via app.add_panel.")
+
+            # Tenta aplicar o ícone na aba
+            try:
+                set_icon = getattr(app, "_set_panel_icon", None)
+                icon = _load_icon_with_fallback("calculator_panel", mw, fallback_name="calculator")
+                if callable(set_icon) and not icon.isNull():
+                    set_icon(dock, icon)
+            except Exception:
+                pass
+
+            # Esconde logo em seguida para respeitar a inicialização limpa
+            try:
+                dock.hide()
+            except Exception:
+                pass
+            
+            # Retorna o painel para a toolbar continuar funcionando
             return panel
         except Exception:
-            traceback.print_exc()
+            _log("app.add_panel falhou, caindo no fallback:\n" + traceback.format_exc())
 
+    # --- FALLBACK (se não tiver add_panel) ---
     try:
         docks = mw.findChildren(QDockWidget)
     except Exception:
         docks = []
+        
     if docks and hasattr(mw, "tabifyDockWidget"):
         anchor = None
         for d in docks:
@@ -1841,6 +1850,7 @@ def _attach_calculator_panel(mw):
         if anchor is None:
             visiveis = [d for d in docks if d.isVisible()]
             anchor = (visiveis or docks)[0]
+            
         area = Qt.RightDockWidgetArea
         try:
             a = mw.dockWidgetArea(anchor)
@@ -1849,238 +1859,172 @@ def _attach_calculator_panel(mw):
                 area = a
         except Exception:
             pass
+            
         try:
             dock = QDockWidget(_t("Calculadora"), mw)
             dock.setObjectName("igz_tb_calculator_dock")
             dock.setWidget(panel)
-            dock.setAllowedAreas(
-                Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea
-            )
+            dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
             mw.addDockWidget(area, dock)
             mw.tabifyDockWidget(anchor, dock)
             dock.show()
             dock.raise_()
             panel._dock = dock
-            _log("Painel Calculadora tabificado junto a dock existente.")
             return panel
         except Exception:
             traceback.print_exc()
 
-    if hasattr(mw, "addDockWidget"):
-        try:
-            dock = QDockWidget(_t("Calculadora"), mw)
-            dock.setObjectName("igz_tb_calculator_dock")
-            dock.setWidget(panel)
-            dock.setAllowedAreas(
-                Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea
-            )
-            mw.addDockWidget(Qt.RightDockWidgetArea, dock)
-            panel._dock = dock
-            _log("Painel Calculadora criado como dock próprio (fallback).")
-            return panel
-        except Exception:
-            traceback.print_exc()
-
-    _log("main_window sem addDockWidget/QTabWidget (painel ignorado).")
     return None
-
+    
 
 # =========================================================================
 # TOOLBAR
+# =========================================================================
+
+# =========================================================================
+# CRIAÇÃO DA TOOLBAR E PAINEL (Padrão "Meu Plugin")
 # =========================================================================
 
 def create_toolbar(main_window, app=None):
     toolbar = QToolBar("Calculadora", main_window)
     toolbar.setObjectName("igz_tb_calculator")
     toolbar.setWindowTitle(_t("Calculadora"))
+    toolbar.setToolButtonStyle(Qt.ToolButtonIconOnly)
 
-    try:
-        toolbar.setToolButtonStyle(Qt.ToolButtonIconOnly)
-    except Exception:
-        pass
-
-    # Botão 1 — abre o diálogo
+    # Botão 1 — abre o diálogo flutuante
     icon_dlg = _load_icon_with_fallback("calculator", main_window)
     action_dlg = QAction(icon_dlg, _t("Calculadora"), main_window)
     action_dlg.setToolTip(_t("Abre a calculadora em uma janela flutuante."))
     action_dlg.triggered.connect(lambda checked=False: run(main_window))
     toolbar.addAction(action_dlg)
 
-    # Botão 2 — painel lateral
-    panel = _attach_calculator_panel(main_window)
-    if panel is not None:
-        icon_panel = _load_icon_with_fallback(
-            "calculator_panel", main_window, fallback_name="calculator"
-        )
+    # =========================================================================
+    # REGISTRO DO PAINEL (Idêntico ao Meu Plugin)
+    # =========================================================================
+    panel = None
+    dock = None
+    
+    try:
+        panel = CalculatorPanel(main_window)
+        
+        add_panel = getattr(app, "add_panel", None)
+        if callable(add_panel):
+            # 1. O host registra e gerencia o dock
+            dock = add_panel(_t("Calculadora"), panel, name="igz_tb_calculator", stretch=1)
+            panel._dock = dock
+            _log("Painel Calculadora registrado via app.add_panel.")
 
-        # -----------------------------------------------------------------
-        # Ação unificada: mostra + traz para frente + foca.
-        # - Se estiver escondido → mostra.
-        # - Se estiver visível mas atrás → só traz para frente.
-        # - Se estiver visível e na frente → esconde (toggle real).
-        # -----------------------------------------------------------------
-        def _toggle_or_show_panel(checked: bool = False) -> None:
+            # 2. Ícone na aba (opcional)
             try:
-                dock = getattr(panel, "_dock", None)
+                set_icon = getattr(app, "_set_panel_icon", None)
+                
+                # Carrega o ícone "calculator_panel" (busca as variantes dark/light)
+                icon = _load_icon_with_fallback(
+                    "calculator_panel_tab", 
+                    main_window, 
+                    fallback_name="calculator"
+                )
+                
+                if callable(set_icon) and not icon.isNull():
+                    set_icon(dock, icon)
+                    _log("Ícone específico aplicado na aba do painel.")
+            except Exception as exc:
+                _log(f"Falha ao aplicar ícone na aba: {exc}")
 
-                # --- Caso 1: painel virou aba de QTabWidget ------------
-                if dock is None:
-                    # Encontra o QTabWidget que contém o panel
-                    tabs = main_window.findChildren(QTabWidget)
-                    target_tab = None
-                    for tw in tabs:
-                        idx = tw.indexOf(panel)
-                        if idx >= 0:
-                            target_tab = tw
-                            break
+            # 3. FORÇA O ESCONDIMENTO INICIAL
+            try:
+                dock.hide()
+            except Exception:
+                pass
+                
+        else:
+            # Fallback: se o IngeTrazo antigo não tiver add_panel
+            dock = QDockWidget(_t("Calculadora"), main_window)
+            dock.setObjectName("igz_tb_calculator_dock")
+            dock.setWidget(panel)
+            dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+            main_window.addDockWidget(Qt.RightDockWidgetArea, dock)
+            dock.hide()
+            panel._dock = dock
+            
+    except Exception as exc:
+        _log("Erro ao criar/registrar o painel da calculadora:\n" + traceback.format_exc())
 
-                    if target_tab is not None:
-                        # Já está na aba visível?
-                        already_visible = (
-                            target_tab.isVisible()
-                            and target_tab.currentWidget() is panel
-                        )
-                        # Se está visível e na frente → esconde (toggle)
-                        if already_visible:
-                            target_tab.setCurrentWidget(target_tab.widget(0)
-                                                        if target_tab.count() > 1
-                                                        else panel)
-                            # Fallback: se não há outra aba, não esconde
-                            if target_tab.currentWidget() is panel:
-                                _bring_tab_to_front(target_tab, panel)
-                            return
-                        # Senão: mostra + foca
-                        _bring_tab_to_front(target_tab, panel)
-                        return
+    # Botão 2 — Ação do painel lateral (Lógica de 3 estados do Meu Plugin)
+    if panel is not None:
+        icon_panel = _load_icon_with_fallback("calculator_panel", main_window, fallback_name="calculator")
+        action_panel = QAction(icon_panel, _t("Painel Calculadora"), main_window)
+        action_panel.setToolTip(_t("Mostrar/ocultar a calculadora no painel lateral."))
+        action_panel.setCheckable(True)
+        
+        # Estado inicial: Escondido
+        action_panel.setChecked(False)
+        
+        if dock is not None:
+            try:
+                dock.visibilityChanged.connect(action_panel.setChecked)
+            except Exception:
+                pass
 
-                    # Sem QTabWidget: só mostra a janela principal
-                    try:
-                        main_window.show()
-                        main_window.raise_()
-                        main_window.activateWindow()
-                    except Exception:
-                        pass
+        def _toggle_or_show_panel(_checked=False):
+            d = getattr(panel, "_dock", None)
+            if d is None:
+                return
+                
+            try:
+                was_visible = d.isVisible()
+                is_tabbed = False
+                try:
+                    is_tabbed = bool(d.tabifiedDockWidgets())
+                except Exception:
+                    pass
+
+                if was_visible and not is_tabbed:
+                    # Visível e sozinho → Esconde
+                    d.hide()
                     return
 
-                # --- Caso 2: painel virou QDockWidget ------------------
-                # Já está visível?
-                was_visible = dock.isVisible()
-                # Está aba ativa? (se está tabificado, precisa ser a ativa)
+                # Escondido ou tabificado atrás → Mostra e traz pra frente
+                d.setVisible(True)
+                
                 try:
-                    is_current = dock.isVisible() and not dock.isFloating() \
-                        and dock.visibleRegion().isEmpty() is False
-                except Exception:
-                    is_current = dock.isVisible()
-
-                if was_visible and is_current:
-                    # Visível e na frente → esconde (toggle)
-                    dock.hide()
-                else:
-                    # Escondido OU atrás → mostra e traz para frente
-                    dock.show()
-                    dock.raise_()
-
-                    # Se está tabificado com outras docks, ativa a aba
-                    try:
-                        dock.raise_()  # garante que é a aba ativa
-                    except Exception:
-                        pass
-
-                    # Foca o painel para dar feedback visual
-                    try:
-                        panel.setFocus()
-                    except Exception:
-                        pass
-
-                    # Traz a janela principal para frente (se estava atrás)
-                    try:
-                        main_window.raise_()
-                        main_window.activateWindow()
-                    except Exception:
-                        pass
-
-                # Feedback visual: marca o botão como checked enquanto
-                # o painel estiver visível (para o usuário ver o estado).
-                try:
-                    if hasattr(_toggle_button_ref, "current"):
-                        _toggle_button_ref.current.setChecked(
-                            dock.isVisible()
-                        )
+                    for sib in d.tabifiedDockWidgets():
+                        sib.lower()
                 except Exception:
                     pass
-            except Exception:
-                _log("_toggle_or_show_panel falhou:\n"
-                     + traceback.format_exc())
+                
+                d.raise_()
 
-        # Helper: traz uma aba para frente e foca
-        def _bring_tab_to_front(tab_widget, target_widget) -> None:
-            try:
-                tab_widget.setCurrentWidget(target_widget)
-                tab_widget.raise_()
+                # Reforço: busca a QTabBar da pilha de abas e ativa a aba
                 try:
-                    target_widget.setFocus()
+                    from PySide6.QtWidgets import QTabBar
+                    title = d.windowTitle()
+                    for tb in main_window.findChildren(QTabBar):
+                        for i in range(tb.count()):
+                            if tb.tabText(i) == title:
+                                tb.setCurrentIndex(i)
+                                raise StopIteration
+                except StopIteration:
+                    pass
                 except Exception:
                     pass
+
                 try:
+                    if d.widget():
+                        d.widget().setFocus()
                     main_window.raise_()
                     main_window.activateWindow()
                 except Exception:
                     pass
-            except Exception:
-                traceback.print_exc()
+                    
+            except Exception as exc:
+                _log(f"_toggle_or_show_panel falhou: {exc}")
 
-        # Referência mutável para o botão (usada no feedback acima)
-        _toggle_button_ref = {"current": None}
-
-        # Cria a QAction
-        icon_ok = icon_panel if not icon_panel.isNull() else _fallback_icon()
-        action_panel = QAction(icon_ok, _t("Painel Calculadora"),
-                               main_window)
-        action_panel.setToolTip(
-            _t("Mostrar/ocultar a calculadora no painel lateral.")
-        )
-        action_panel.setCheckable(True)
-
-        # Estado inicial: reflete se o painel está visível
-        try:
-            dock = getattr(panel, "_dock", None)
-            if dock is not None:
-                action_panel.setChecked(dock.isVisible())
-            else:
-                # Achou como aba?
-                for tw in main_window.findChildren(QTabWidget):
-                    if tw.indexOf(panel) >= 0:
-                        action_panel.setChecked(
-                            tw.isVisible() and tw.currentWidget() is panel
-                        )
-                        break
-        except Exception:
-            pass
-
-        # Connect (usa checked do QAction)
         action_panel.triggered.connect(_toggle_or_show_panel)
-
-        # Se virou dock, ainda escuta o toggleViewAction dele para
-        # manter o "checked" sincronizado (o usuário pode fechar o dock
-        # pelo X do próprio dock, e o botão precisa refletir isso).
-        try:
-            dock = getattr(panel, "_dock", None)
-            if dock is not None:
-                def _sync_checked(visible: bool) -> None:
-                    try:
-                        action_panel.setChecked(bool(visible))
-                    except Exception:
-                        pass
-                dock.visibilityChanged.connect(_sync_checked)
-        except Exception:
-            pass
-
-        _toggle_button_ref["current"] = action_panel
         toolbar.addAction(action_panel)
 
     toolbar.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
     return toolbar
-
 
 # =========================================================================
 # SETUP
@@ -2130,14 +2074,12 @@ def _add_toolbar(mw, app):
             except Exception:
                 pass
 
-        tb = create_toolbar(mw, app=app)
+        # ESTA LINHA É CRUCIAL: passa o app
+        tb = create_toolbar(mw, app=app) 
+        
         mw.addToolBar(Qt.TopToolBarArea, tb)
         tb.show()
         _TOOLBAR_CREATED = True
-        _log(
-            f"toolbar adicionada em {type(mw).__name__}; "
-            f"visible={tb.isVisible()}, lang={_lang_key()}"
-        )
         return tb
     except Exception:
         _log("_add_toolbar falhou:\n" + traceback.format_exc())
@@ -2165,6 +2107,7 @@ def _try_setup(app, attempts: int = 12):
     global _TOOLBAR_CREATED
     if _TOOLBAR_CREATED:
         return
+    
     mw = _find_main_window(app)
     if mw is None:
         if attempts > 0:
@@ -2172,19 +2115,18 @@ def _try_setup(app, attempts: int = 12):
         else:
             _log("setup: main window não encontrada após retries.")
         return
+        
     _add_toolbar(mw, app)
-    QTimer.singleShot(1500, lambda: _ensure_toolbar(mw, app))
 
 
 def setup(*args, **kwargs) -> None:
-    global _TOOLBAR_CREATED, _REVERIFY_DONE
-    _REVERIFY_DONE = False
+    global _TOOLBAR_CREATED
     app = None
     for a in args:
         if a is None:
             continue
         if (hasattr(a, "main_window") or hasattr(a, "window")
-                or hasattr(a, "addToolBar")):
+                or hasattr(a, "addToolBar") or hasattr(a, "add_panel")):
             app = a
             break
     if app is None:
@@ -2195,6 +2137,8 @@ def setup(*args, **kwargs) -> None:
 
     if _TOOLBAR_CREATED:
         return
+        
+    # Chama _try_setup passando o APP
     QTimer.singleShot(0, lambda: _try_setup(app, attempts=12))
 
 

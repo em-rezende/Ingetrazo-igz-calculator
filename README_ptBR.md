@@ -12,8 +12,8 @@ com espaço para mais idiomas).
 Repositório: <https://github.com/em-rezende/Ingetrazo-igz-calculator>
 
 - **Autor:** Ezequiel M. Rezende
-- **Data:** 2026‑11‑07
-- **Versão:** 1.2.0
+- **Data:** 2026‑11‑14
+- **Versão:** 1.2.1
 - **Licença:** [GPL-3.0-or-later](https://www.gnu.org/licenses/gpl-3.0.html)
   (mesma do IngeTrazo — ver [LICENSE](https://github.com/ingelibre/ingetrazo/blob/main/LICENSE))
 
@@ -30,10 +30,8 @@ Repositório: <https://github.com/em-rezende/Ingetrazo-igz-calculator>
 ```
 <plugins>/
 └── igz_calculator/
-    ├── igz_calculator.py     # a extensão inteira (arquivo único)
-    ├── README.md             # este arquivo (inglês)
-    ├── README_ptBR.md        # esta versão em português
-    ├── LICENSE               # texto completo da GPL-3.0
+    ├── __init__.py           # ponto de entrada — define setup(app)
+    ├── igz_calculator.py     # a extensão inteira
     ├── i18n/
     │   ├── en.json
     │   ├── pt-BR.json
@@ -43,8 +41,9 @@ Repositório: <https://github.com/em-rezende/Ingetrazo-igz-calculator>
     │   ├── de.json
     │   └── zh.json
     └── icons/
-        ├── calculator.svg         / calculator_light.svg
-        └── calculator_panel.svg   / calculator_panel_light.svg
+        ├── calculator.svg             / calculator_light.svg
+        ├── calculator_panel.svg       / calculator_panel_light.svg
+        └── calculator_panel_tab.svg   / calculator_panel_tab_light.svg
 ```
 
 `igz_calculator.py` é um **plugin autônomo de arquivo único**: define
@@ -245,7 +244,8 @@ de ajuste. A calculadora em si é totalmente autocontida.
 2. Crie uma pasta chamada **`igz_calculator`** dentro dela.
 3. Copie para dentro:
    - `igz_calculator.py`
-   - `i18n/` (com `en.json`, `pt-BR.json`, `es.json`)
+   - `i18n/` (com `en.json`, `pt-BR.json`, `es.json`, `it.json`, `fr.json`,
+     `de.json`, `zh.json`)
    - `icons/` (opcional)
    - um `__init__.py` que reexporte `setup` (ver nota abaixo)
 4. Reinicie o IngeTrazo. Os botões **Calculadora** e

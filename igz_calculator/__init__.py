@@ -1,3 +1,10 @@
+# Extension: igz_calculator — Calculator (Standard / Scientific)
+# Author: Ezequiel M. Rezende
+# Version: 1.2.1
+# Date: 2026-11-14
+# License: GPL-3.0-or-later (same as IngeTrazo)
+# Repository: https://github.com/em-rezende/Ingetrazo-igz-calculator
+
 """
 Plugin de Calculadora para IngeTrazo
 """

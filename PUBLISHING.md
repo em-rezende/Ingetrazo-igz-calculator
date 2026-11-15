@@ -18,13 +18,13 @@ IngeTrazo installs one of:
   package).
 
 This extension is multi-file, so it ships as a **package ZIP**. The folder is
-`packaging/igz_calculator/`:
+`igz_calculator/`:
 
 ```
 igz_calculator/
 ├── __init__.py          # defines setup(app) — the entry point IngeTrazo loads
 ├── igz_calculator.py     # the whole extension
-├── i18n/                 # en.json, pt-BR.json, es.json
+├── i18n/                 # en, pt-BR, es, it, fr, de, zh (JSON)
 └── icons/                # calculator*.svg, calculator_panel*.svg
 ```
 
@@ -37,33 +37,61 @@ implementation) because both IngeTrazo and the catalog checker look for a
 ```python
 # from the repository root
 import hashlib, os, zipfile
-PKG = os.path.join("packaging", "igz_calculator")
+
+PKG = "igz_calculator"
+ZIP = os.path.join("dist", "igz_calculator.zip")
+STAMP = (2026, 11, 14, 0, 0, 0)  # fixed mtime -> reproducible ZIP
+
 os.makedirs("dist", exist_ok=True)
-with zipfile.ZipFile("dist/igz_calculator.zip", "w", zipfile.ZIP_DEFLATED) as z:
-    for base, dirs, files in os.walk(PKG):
-        dirs[:] = [d for d in dirs if d != "__pycache__"]
-        for f in files:
-            if f.endswith(".pyc"):
-                continue
-            full = os.path.join(base, f)
-            rel = os.path.relpath(full, PKG).replace("\\", "/")
-            z.write(full, arcname="igz_calculator/" + rel)
-print(hashlib.sha256(open("dist/igz_calculator.zip", "rb").read()).hexdigest())
+if os.path.exists(ZIP):
+    os.remove(ZIP)
+
+entries = []
+for base, dirs, files in os.walk(PKG):
+    dirs[:] = sorted(d for d in dirs if d != "__pycache__")
+    for name in sorted(files):
+        if name.endswith(".pyc"):
+            continue
+        full = os.path.join(base, name)
+        rel = os.path.relpath(full, PKG).replace("\\", "/")
+        entries.append((full, rel))
+entries.sort(key=lambda item: item[1])
+
+with zipfile.ZipFile(ZIP, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as z:
+    for full, rel in entries:
+        info = zipfile.ZipInfo("igz_calculator/" + rel, date_time=STAMP)
+        info.compress_type = zipfile.ZIP_DEFLATED
+        info.external_attr = 0o644 << 16
+        with open(full, "rb") as fh:
+            z.writestr(info, fh.read())
+
+digest = hashlib.sha256(open(ZIP, "rb").read()).hexdigest()
+with open(ZIP + ".sha256", "w", encoding="ascii", newline="\n") as fh:
+    fh.write(digest + "  igz_calculator.zip\n")
+print(digest)
 ```
+
+This produces two files in `dist/` (both git‑ignored, both uploaded to the
+release):
+
+- `igz_calculator.zip` — the installable package;
+- `igz_calculator.zip.sha256` — `sha256sum` format (`<hash>  <file>`), the same
+  value that goes into the catalog TOML.
 
 On Windows you may also verify with:
 
 ```powershell
 certutil -hashfile dist\igz_calculator.zip SHA256
+Get-Content dist\igz_calculator.zip.sha256
 ```
 
 ## 3. Publish and tag
 
 1. Push the source to <https://github.com/em-rezende/Ingetrazo-igz-calculator>.
-2. Create a release with a **tag** (e.g. `v1.1.0`) and upload
-   `dist/igz_calculator.zip` as a release asset.
+2. Create a release with a **tag** (e.g. `v1.2.1`), attaching
+   `dist/igz_calculator.zip` and `dist/igz_calculator.zip.sha256`.
 3. Point `download` at that exact asset, e.g.
-   `https://github.com/em-rezende/Ingetrazo-igz-calculator/releases/download/v1.1.0/igz_calculator.zip`.
+   `https://github.com/em-rezende/Ingetrazo-igz-calculator/releases/download/v1.2.1/igz_calculator.zip`.
    Never point `download` at `main`/`master` — the catalog rejects branch URLs.
 
 ## 4. Open the pull request
@@ -96,7 +124,7 @@ usuários baixam.
 
 O IngeTrazo instala um `.py` único **ou** um `.zip` contendo **exatamente uma
 pasta com `__init__.py`** (um pacote Python). Como esta extensão tem vários
-arquivos, ela é distribuída como **ZIP de pacote**: `packaging/igz_calculator/`.
+arquivos, ela é distribuída como **ZIP de pacote**: `igz_calculator/`.
 
 O `__init__.py` **define** um `setup(app)` de topo (fina camada sobre a
 implementação), pois tanto o IngeTrazo quanto o robô do catálogo procuram uma
@@ -104,17 +132,19 @@ função `setup` ou uma subclasse de `Tool` **no `__init__.py` do pacote**.
 
 ## 2. Gerar o ZIP e calcular o hash
 
-Use o script da seção em inglês, ou no Windows:
+Use o script da seção em inglês. Ele grava `dist/igz_calculator.zip` e
+`dist/igz_calculator.zip.sha256`, ou no Windows confira com:
 
 ```powershell
 certutil -hashfile dist\igz_calculator.zip SHA256
+Get-Content dist\igz_calculator.zip.sha256
 ```
 
 ## 3. Publicar e etiquetar
 
 1. Envie o código para <https://github.com/em-rezende/Ingetrazo-igz-calculator>.
-2. Crie uma *release* com uma **tag** (ex.: `v1.1.0`) e anexe
-   `dist/igz_calculator.zip` como asset.
+2. Crie uma *release* com uma **tag** (ex.: `v1.2.1`) e anexe
+   `dist/igz_calculator.zip` e `dist/igz_calculator.zip.sha256` como assets.
 3. Aponte `download` para esse asset exato. **Nunca** aponte `download` para
    `main`/`master` — o catálogo rejeita URLs de branch.
 

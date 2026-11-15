@@ -10,8 +10,8 @@ keyboard input**, **one‑click injection into the VCB** (Value Control Box),
 Repository: <https://github.com/em-rezende/Ingetrazo-igz-calculator>
 
 - **Author:** Ezequiel M. Rezende
-- **Date:** 2026‑11‑07
-- **Version:** 1.2.0
+- **Date:** 2026‑11‑14
+- **Version:** 1.2.1
 - **License:** [GPL-3.0-or-later](https://www.gnu.org/licenses/gpl-3.0.html)
   (same as IngeTrazo — see [LICENSE](https://github.com/ingelibre/ingetrazo/blob/main/LICENSE))
 
@@ -28,10 +28,8 @@ Repository: <https://github.com/em-rezende/Ingetrazo-igz-calculator>
 ```
 <plugins>/
 └── igz_calculator/
-    ├── igz_calculator.py     # the entire extension (single file)
-    ├── README.md             # this file (English)
-    ├── README_ptBR.md        # Portuguese version
-    ├── LICENSE               # full GPL-3.0 text
+    ├── __init__.py           # entry point — defines setup(app)
+    ├── igz_calculator.py     # the entire extension
     ├── i18n/
     │   ├── en.json
     │   ├── pt-BR.json
@@ -41,8 +39,9 @@ Repository: <https://github.com/em-rezende/Ingetrazo-igz-calculator>
     │   ├── de.json
     │   └── zh.json
     └── icons/
-        ├── calculator.svg         / calculator_light.svg
-        └── calculator_panel.svg   / calculator_panel_light.svg
+        ├── calculator.svg             / calculator_light.svg
+        ├── calculator_panel.svg       / calculator_panel_light.svg
+        └── calculator_panel_tab.svg   / calculator_panel_tab_light.svg
 ```
 
 `igz_calculator.py` is a **single‑file, self‑contained plugin**: it defines
@@ -238,7 +237,8 @@ fully self‑contained.
 2. Create a folder named **`igz_calculator`** inside it.
 3. Copy into it:
    - `igz_calculator.py`
-   - `i18n/` (with `en.json`, `pt-BR.json`, `es.json`)
+   - `i18n/` (with `en.json`, `pt-BR.json`, `es.json`, `it.json`, `fr.json`,
+     `de.json`, `zh.json`)
    - `icons/` (optional)
    - an `__init__.py` that re‑exports `setup` (see note below)
 4. Restart IngeTrazo. The **Calculator** and **Calculator Panel** buttons
